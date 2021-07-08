@@ -2,18 +2,66 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file.
 
-import histogram show TrueColorHistogram
 import bitmap show *
-import font show *
+import color_tft show *
 import font.matthew_welch.tiny as tiny_4
-import font.x11_100dpi.sans.sans_24_bold as sans_24_bold
+import font show *
 import font.x11_100dpi.sans.sans_10 as sans_10
+import font.x11_100dpi.sans.sans_24_bold as sans_24_bold
+import gpio
+//import histogram show TrueColorHistogram
 import pixel_display show *
-import true_color show *
-import texture show *
+import pixel_display.texture show *
+import pixel_display.true_color show *
+import spi
+
+get_display -> TrueColorPixelDisplay:
+                                         // MHz x    y    xoff yoff sda clock cs  dc  reset backlight invert
+  M5_STACK_16_BIT_LANDSCAPE_SETTINGS ::= [  40, 320, 240, 0,   0,   23, 18,   14, 27, 33,   32,       false, COLOR_TFT_16_BIT_MODE ]
+  WROVER_16_BIT_LANDSCAPE_SETTINGS   ::= [  40, 320, 240, 0,   0,   23, 19,   22, 21, 18,   -5,       false, COLOR_TFT_16_BIT_MODE | COLOR_TFT_FLIP_XY ]
+  LILYGO_16_BIT_LANDSCAPE_SETTINGS   ::= [  20, 80,  160, 26,  1,   19, 18,   5 , 23, 26,   27,       true,  COLOR_TFT_16_BIT_MODE ]
+
+  // Pick one of the above.
+  s := M5_STACK_16_BIT_LANDSCAPE_SETTINGS
+
+  hz            := 1_000_000 * s[0]
+  width         := s[1]
+  height        := s[2]
+  x_offset      := s[3]
+  y_offset      := s[4]
+  mosi          := gpio.Pin s[5]
+  clock         := gpio.Pin s[6]
+  cs            := gpio.Pin s[7]
+  dc            := gpio.Pin s[8]
+  reset         := gpio.Pin s[9]
+  backlight     := s[10] >= 0 ? gpio.Pin s[10] : null
+  invert_colors := s[11]
+  flags         := s[12]
+
+  bus := spi.Bus
+    --mosi=mosi
+    --clock=clock
+
+  device := bus.device
+    --cs=cs
+    --dc=dc
+    --frequency=hz
+
+  driver := ColorTft device width height
+    --reset=reset
+    --backlight=backlight
+    --x_offset=x_offset
+    --y_offset=y_offset
+    --flags=flags
+    --invert_colors=invert_colors
+
+  tft := TrueColorPixelDisplay driver
+
+  return tft
 
 main:
-  tft := TrueColorPixelDisplay "m5_tft"
+  tft := get_display
+
   tft.background = get_rgb 0x12 0x03 0x25
   width := 320
   height := 240
@@ -40,10 +88,10 @@ main:
 
   histo_context := tft.context --color=WHITE --translate_x=19 --translate_y=130
   histo_transform := histo_context.transform
-  red_histo := TrueColorHistogram  1 -20 50 40 histo_transform 1.0 (get_rgb 0xe0 0x20 0x10)
-  grey_histo := TrueColorHistogram 1  20 50 50 histo_transform 1.0 (get_rgb 0xe0 0xe0 0xff)
-  tft.add red_histo
-  tft.add grey_histo
+  //red_histo := TrueColorHistogram  1 -20 50 40 histo_transform 1.0 (get_rgb 0xe0 0x20 0x10)
+  //grey_histo := TrueColorHistogram 1  20 50 50 histo_transform 1.0 (get_rgb 0xe0 0xe0 0xff)
+  //tft.add red_histo
+  //tft.add grey_histo
   x_axis := tft.filled_rectangle histo_context -10 70 70 1
   y_axis := tft.filled_rectangle histo_context 0 0 1 80
 
@@ -69,6 +117,7 @@ main:
   y := 0
   last := Time.monotonic_us
   while true:
+    sleep --ms=1  // Avoid watchdog.
     square.move_to x y
     if x < sq_x: x += 2
     if y < sq_y: y += 2
@@ -82,11 +131,11 @@ main:
       green_dir = -green_dir
       red_dir = -red_dir
       histo_transform = histo_transform.rotate_right.translate 0 -70
-      red_histo.set_transform histo_transform
-      grey_histo.set_transform histo_transform
+      //red_histo.set_transform histo_transform
+      //grey_histo.set_transform histo_transform
       x_axis.set_transform histo_transform
       y_axis.set_transform histo_transform
-      barcode_transform = (barcode_transform.translate 50 50).rotate_left.translate -50 -50 
+      barcode_transform = (barcode_transform.translate 50 50).rotate_left.translate -50 -50
     else if barcode.get_transform != barcode_transform:
       barcode.set_transform barcode_transform
     red.move_to red_x 60
@@ -97,8 +146,8 @@ main:
     // Scale frame time by some random factor and display it on the histogram.
     diff := (next - last) >> 12
     frame.text = "$(%3s (next - last) / 1000)ms"
-    grey_histo.add diff
-    red_histo.add diff - 50
+    //grey_histo.add diff
+    //red_histo.add diff - 50
     last = next
 
 square_square x y transform [get_color]:
