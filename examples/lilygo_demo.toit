@@ -2,15 +2,18 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file.
 
+import color_tft show *
 import font show *
+import font.x11_100dpi.sans.sans_14_bold as sans_14
+import gpio
+import pixel_display show *
+import pixel_display.texture show TEXT_TEXTURE_ALIGN_RIGHT TEXT_TEXTURE_ALIGN_CENTER
+import pixel_display.true_color show BLACK WHITE get_rgb
 // Roboto is a package installed with
 // toit pkg install toit-font-google-100dpi-roboto
 // If this import fails you need to run `toit pkg fetch` in this directory.
 import roboto.bold_36 as roboto_36_bold
-import font.x11_100dpi.sans.sans_14_bold as sans_14
-import pixel_display show TrueColorPixelDisplay
-import texture show TEXT_TEXTURE_ALIGN_RIGHT TEXT_TEXTURE_ALIGN_CENTER
-import true_color show BLACK WHITE get_rgb
+import spi
 
 DAYS ::= ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 MONTHS ::= ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
@@ -21,7 +24,7 @@ MONTHS ::= ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"
 // once every 10 seconds.  The date is written either above or below the
 // time, depending on where there is space.
 main:
-  tft := TrueColorPixelDisplay "lilygo_tft"
+  tft := get_display
   tft.background = BLACK
   sans := Font [sans_14.ASCII]
   sans_big := Font [roboto_36_bold.ASCII]
@@ -66,3 +69,47 @@ main:
     seconds.text = "$(%02d local.s)"
     tft.draw
     sleep --ms=1000
+
+get_display -> TrueColorPixelDisplay:
+                                         // MHz x    y    xoff yoff sda clock cs  dc  reset backlight invert
+  M5_STACK_16_BIT_LANDSCAPE_SETTINGS ::= [  40, 320, 240, 0,   0,   23, 18,   14, 27, 33,   32,       false, COLOR_TFT_16_BIT_MODE ]
+  WROVER_16_BIT_LANDSCAPE_SETTINGS   ::= [  40, 320, 240, 0,   0,   23, 19,   22, 21, 18,   -5,       false, COLOR_TFT_16_BIT_MODE | COLOR_TFT_FLIP_XY ]
+  LILYGO_16_BIT_LANDSCAPE_SETTINGS   ::= [  20, 80,  160, 26,  1,   19, 18,   5 , 23, 26,   27,       true,  COLOR_TFT_16_BIT_MODE ]
+
+  // Pick one of the above.
+  s := LILYGO_16_BIT_LANDSCAPE_SETTINGS
+
+  hz            := 1_000_000 * s[0]
+  width         := s[1]
+  height        := s[2]
+  x_offset      := s[3]
+  y_offset      := s[4]
+  mosi          := gpio.Pin s[5]
+  clock         := gpio.Pin s[6]
+  cs            := gpio.Pin s[7]
+  dc            := gpio.Pin s[8]
+  reset         := gpio.Pin s[9]
+  backlight     := s[10] >= 0 ? gpio.Pin s[10] : null
+  invert_colors := s[11]
+  flags         := s[12]
+
+  bus := spi.Bus
+    --mosi=mosi
+    --clock=clock
+
+  device := bus.device
+    --cs=cs
+    --dc=dc
+    --frequency=hz
+
+  driver := ColorTft device width height
+    --reset=reset
+    --backlight=backlight
+    --x_offset=x_offset
+    --y_offset=y_offset
+    --flags=flags
+    --invert_colors=invert_colors
+
+  tft := TrueColorPixelDisplay driver
+
+  return tft

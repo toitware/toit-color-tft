@@ -48,11 +48,9 @@
 import binary
 import font show *
 import bitmap show *
-import true_color show *
+import pixel_display.true_color show *
 import pixel_display show *
 import gpio
-import peripherals.rpc show *
-import ..display_driver show *
 
 COLOR_TFT_FLIP_X ::= 0x40   // Flip across the X axis.
 COLOR_TFT_FLIP_Y ::= 0x80   // Flip across the Y axis.
@@ -118,8 +116,8 @@ COLOR_TFT_16_PIXEL_MODE_ ::= 5
 COLOR_TFT_18_PIXEL_MODE_ ::= 6
 COLOR_TFT_TRUNCATED_24_PIXEL_MODE_ ::= 7
 
-class ColorTFT extends DisplayDriver:
-  flags ::= RPC_DISPLAY_FLAG_TRUE_COLOR | RPC_DISPLAY_FLAG_PARTIAL_UPDATES
+class ColorTft extends AbstractDriver:
+  flags ::= FLAG_TRUE_COLOR | FLAG_PARTIAL_UPDATES
   width/int := ?
   height/int := ?
   x_offset_/int := ?
