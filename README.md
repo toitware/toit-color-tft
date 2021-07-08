@@ -1,4 +1,4 @@
-# toit-color-tft
+# Color TFT
 Driver for the 18 bit TFT color displays.
 
 Intended to drive the ILI9341,
