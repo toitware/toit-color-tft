@@ -9,8 +9,8 @@ import font show *
 import font.x11_100dpi.sans.sans_10 as sans_10
 import font.x11_100dpi.sans.sans_24_bold as sans_24_bold
 import gpio
-//import histogram show TrueColorHistogram
 import pixel_display show *
+import pixel_display.histogram show TrueColorHistogram
 import pixel_display.texture show *
 import pixel_display.true_color show *
 import spi
@@ -77,8 +77,8 @@ main:
   tiny_context := tft.context --landscape --color=WHITE --font=tiny
   ctr := tft.text (sans_big_context.with --alignment=TEXT_TEXTURE_ALIGN_RIGHT) 160 25 "00000"
   ctr_small := tft.text sans_context 160 25 "000"
-  red := tft.text (sans_context.with --color=(get_rgb 0xff 0x9f 0x9f)) red_x 50 "Rød"
-  green := tft.text (sans_context.with --color=(get_rgb 0x8f 0xff 0x9f)) green_x 120 "Grøn"
+  red := tft.text (sans_context.with --color=(get_rgb 0xff 0x9f 0x9f)) red_x 50 "Red"
+  green := tft.text (sans_context.with --color=(get_rgb 0x8f 0xff 0x9f)) green_x 120 "Green"
   numbers := tft.text tiny_context 20 70 "!\"#\$%&/(){}=?+`,;.:-_^~01234567890"
   lc := tft.text tiny_context 20 78 "abcdefghijklmnopqrstuvwxyz"
   uc := tft.text tiny_context 20 86 "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -88,10 +88,10 @@ main:
 
   histo_context := tft.context --color=WHITE --translate_x=19 --translate_y=130
   histo_transform := histo_context.transform
-  //red_histo := TrueColorHistogram  1 -20 50 40 histo_transform 1.0 (get_rgb 0xe0 0x20 0x10)
-  //grey_histo := TrueColorHistogram 1  20 50 50 histo_transform 1.0 (get_rgb 0xe0 0xe0 0xff)
-  //tft.add red_histo
-  //tft.add grey_histo
+  red_histo := TrueColorHistogram  1 -20 50 40 histo_transform 1.0 (get_rgb 0xe0 0x20 0x10)
+  grey_histo := TrueColorHistogram 1  20 50 50 histo_transform 1.0 (get_rgb 0xe0 0xe0 0xff)
+  tft.add red_histo
+  tft.add grey_histo
   x_axis := tft.filled_rectangle histo_context -10 70 70 1
   y_axis := tft.filled_rectangle histo_context 0 0 1 80
 
@@ -131,8 +131,8 @@ main:
       green_dir = -green_dir
       red_dir = -red_dir
       histo_transform = histo_transform.rotate_right.translate 0 -70
-      //red_histo.set_transform histo_transform
-      //grey_histo.set_transform histo_transform
+      red_histo.set_transform histo_transform
+      grey_histo.set_transform histo_transform
       x_axis.set_transform histo_transform
       y_axis.set_transform histo_transform
       barcode_transform = (barcode_transform.translate 50 50).rotate_left.translate -50 -50
@@ -146,8 +146,8 @@ main:
     // Scale frame time by some random factor and display it on the histogram.
     diff := (next - last) >> 12
     frame.text = "$(%3s (next - last) / 1000)ms"
-    //grey_histo.add diff
-    //red_histo.add diff - 50
+    grey_histo.add diff
+    red_histo.add diff - 50
     last = next
 
 square_square x y transform [get_color]:

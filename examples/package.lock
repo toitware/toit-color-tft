@@ -11,4 +11,5 @@ packages:
     url: github.com/toitware/toit-font-google-100dpi-roboto
     version: 1.1.0
   toit-pixel-display:
-    path: ../../toit-pixel-display
+    url: github.com/toitware/toit-pixel-display
+    version: 1.1.0
