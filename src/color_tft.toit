@@ -142,7 +142,7 @@ class ColorTft extends AbstractDriver:
     backlight_ = backlight
     reset_ = reset
     madctl_ = flags
-    buffer_ = ByteArray 640
+    buffer_ = ByteArray 1000
 
     sixteen_bit_mode_ = (flags & COLOR_TFT_16_BIT_MODE) != 0
 
@@ -216,57 +216,43 @@ class ColorTft extends AbstractDriver:
     cmd_buffer_[0] = byte
     device_.transfer cmd_buffer_ --dc=cd
 
+  static INVERT := ByteArray 0x100: 0xff - it
+
   draw_true_color left/int top/int right/int bottom/int red/ByteArray green/ByteArray blue/ByteArray -> none:
-    canvas_width := right - left
-    canvas_height := bottom - top
+    patch_width := right - left
+    patch_height := bottom - top
     set_range_ COLOR_TFT_CASET_ left+x_offset_ right+x_offset_
     set_range_ COLOR_TFT_RASET_ top+y_offset_ bottom+y_offset_
     send COLOR_TFT_RAMWR_  // Reset write pointer to caset and raset positions.
+
+    table := invert_colors_ ? INVERT : IDENTITY_LOOKUP_TABLE
 
     if sixteen_bit_mode_:
       // Using the mode where you pack 3 pixels in two bytes.  5 bits for red,
       // 6 for green, 5 for blue (the eye is more sensitive to green).  Since
       // we receive the data in three one-byte-per-pixel buffers we have to
-      // shuffle the bytes.  Some duplication to keep the performance-critical
-      // inner loop as simple as possible.
-      idx := 0
-      canvas_height.repeat: | y |
-        if invert_colors_:
-          canvas_width.repeat: | x |
-            r := 0xff - red[idx]
-            g := 0xff - green[idx]
-            b := 0xff - blue[idx]
-            buffer_[x * 2] = (b & 0xf8) | ((g & 0xe0) >> 5)
-            buffer_[x * 2 + 1] = (r >> 3) | (g << 5)
-            idx++
-        else:
-          canvas_width.repeat: | x |
-            buffer_[x * 2] = (blue[idx] & 0xf8) | ((green[idx] & 0xe0) >> 5)
-            buffer_[x * 2 + 1] = (red[idx] >> 3) | (green[idx] << 5)
-            idx++
-        device_.transfer buffer_ --dc=1 --to=canvas_width * 2
+      // shuffle the bytes.
+      lines_per_chunk := buffer_.size / (patch_width * 2)
+      if lines_per_chunk == 0: throw "Buffer too small for screen size"
+
+      List.chunk_up 0 bottom - top lines_per_chunk: | from to height |
+        blit blue[from * patch_width..]  buffer_      patch_width --destination_pixel_stride=2 --lookup_table=table --mask=0xf8
+        blit green[from * patch_width..] buffer_      patch_width --destination_pixel_stride=2 --lookup_table=table --shift=5 --mask=0x7 --operation=OR
+        blit green[from * patch_width..] buffer_[1..] patch_width --destination_pixel_stride=2 --lookup_table=table --shift=-3 --mask=0xe0
+        blit red[from * patch_width..]   buffer_[1..] patch_width --destination_pixel_stride=2 --lookup_table=table --shift=3 --mask=0x1f
+        device_.transfer buffer_ --dc=1 --to=patch_width * 2 * height
     else:
       // Using the mode where you pack 3 pixels in three bytes.  6 bits per
       // channel with 6 wasted bits per pixel.  Since we receive the data in
-      // three one-byte-per-pixel buffers we have to shuffle the bytes.  Some
-      // duplication to keep the performance-critical inner loop as simple as
-      // possible.
-      canvas_height.repeat: | y |
-        idx := y * canvas_width
-        i := 0
-        if invert_colors_:
-          canvas_width.repeat:
-            j := idx + it
-            buffer_[i++] = 0xff - blue[j]
-            buffer_[i++] = 0xff - green[j]
-            buffer_[i++] = 0xff - red[j]
-        else:
-          canvas_width.repeat:
-            j := idx + it
-            buffer_[i++] = blue[j]
-            buffer_[i++] = green[j]
-            buffer_[i++] = red[j]
-        device_.transfer buffer_ --dc=1 --to=canvas_width*3
+      // three one-byte-per-pixel buffers we have to shuffle the bytes.
+      lines_per_chunk := buffer_.size / (patch_width * 3)
+      if lines_per_chunk == 0: throw "Buffer too small for screen size"
+
+      List.chunk_up 0 bottom - top lines_per_chunk: | from to height |
+        blit blue[from * patch_width..]  buffer_      patch_width --destination_pixel_stride=3 --lookup_table=table
+        blit green[from * patch_width..] buffer_[1..] patch_width --destination_pixel_stride=3 --lookup_table=table
+        blit red[from * patch_width..]   buffer_[2..] patch_width --destination_pixel_stride=3 --lookup_table=table
+        device_.transfer buffer_ --dc=1 --to=patch_width * 3 * height
     send COLOR_TFT_NOP_
 
   refresh left top right bottom:
