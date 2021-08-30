@@ -1,49 +1,15 @@
-// Copyright (C) 2018 Toitware ApS. All rights reserved.
+// Copyright (C) 2021 Toitware ApS. All rights reserved.
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file.
 
-// Driver for the 18 bit TFT color displays. Intended to drive the ILI9341,
-// ILI9488, ST7789V and ST7735 modules in 4-wire SPI mode.  Initially tested
-// with the 240x320 ST7789V as seen on the ESP-WROVER-KIT v3.
-// The 320x240 TFT on the M5Stack is an ILI9341 (or 9342 according to some docs).
-// The display on the LillyGo T-Wristband is an ST7735.
-
-// ESP-WROVER_KIT v3 has the following pins:
-// SDA:  23  (aka mosi)
-// MISO: 25
-// SCK:  19  (clock)
-// CS:   22  (chip select)
-// DC:   21  (command/data)
-// TCS:   0  (touch screen chip select)
-// RST:  18  (reset)
-// BKLIT: 5  (backlight, active low)
-// MADCTL: 0x40
-
-// M5Stack:
-// SDA:   23  (aka mosi)
-// SCK:   18  (clock)
-// CS:    14  (chip select)
-// DC:    27  (command/data)
-// RST    33  (reset)
-// LIGHT: 32  (backlight)
-// MADCTL: 0x00
-
-// Lilygo T-Wristband (LSM9DS1 version):
-// MOSI aka SDA: IO 19
-// SCLK aka SCK: IO 18
-// CS:           IO 05
-// DC:           IO 23
-// RST:          IO 26
-// BL aka BKLIT: IO 27
-
-// Lilygo T-Wristband (non-LSM9DS1 version):
-// MISO:         P013
-// MOSI aka SDA: P014
-// SCLK aka SCK: P012
-// CS:           P02
-// DC:           P03
-// RST:          P04
-// BL aka BKLIT: P07
+/**
+Driver for 18 bit TFT color displays.
+Intended to drive the ILI9341, ILI9488, ST7789V and ST7735 modules in 4-wire
+  SPI mode.  Initially tested with the 240x320 ST7789V as seen on the
+  ESP-WROVER-KIT v3.
+The 320x240 TFT on the M5Stack is an ILI9341 (or 9342 according to some docs).
+The display on the LillyGo T-Wristband is an ST7735.
+*/
 
 import binary
 import font show *
@@ -116,6 +82,48 @@ COLOR_TFT_16_PIXEL_MODE_ ::= 5
 COLOR_TFT_18_PIXEL_MODE_ ::= 6
 COLOR_TFT_TRUNCATED_24_PIXEL_MODE_ ::= 7
 
+/**
+TrueColor Driver intended to be used with the Pixel-Display package
+  at https://pkg.toit.io/package/pixel_display&url=github.com%2Ftoitware%2Ftoit-pixel-display&index=latest
+See https://docs.toit.io/language/sdk/display
+
+ESP-WROVER_KIT v3 has the following pins:
+SDA:  23  (aka mosi)
+MISO: 25
+SCK:  19  (clock)
+CS:   22  (chip select)
+DC:   21  (command/data)
+TCS:   0  (touch screen chip select)
+RST:  18  (reset)
+BKLIT: 5  (backlight, active low)
+MADCTL: 0x40
+
+M5Stack:
+SDA:   23  (aka mosi)
+SCK:   18  (clock)
+CS:    14  (chip select)
+DC:    27  (command/data)
+RST    33  (reset)
+LIGHT: 32  (backlight)
+MADCTL: 0x00
+
+Lilygo T-Wristband (LSM9DS1 version):
+MOSI IO 19 (aka SDA)
+SCLK IO 18 (aka SCK)
+CS:  IO 05
+DC:  IO 23
+RST: IO 26
+BL:  IO 27 (aka BKLIT)
+
+Lilygo T-Wristband (non-LSM9DS1 version):
+MISO: P013
+MOSI: P014 (aka SDA)
+SCLK: P012 (aka SCK)
+CS:   P02
+DC:   P03
+RST:  P04
+BL:   P07  (aka BKLIT)
+*/
 class ColorTft extends AbstractDriver:
   flags ::= FLAG_TRUE_COLOR | FLAG_PARTIAL_UPDATES
   width/int := ?
