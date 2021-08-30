@@ -108,21 +108,21 @@ LIGHT: 32  (backlight)
 MADCTL: 0x00
 
 Lilygo T-Wristband (LSM9DS1 version):
-MOSI aka SDA: IO 19
-SCLK aka SCK: IO 18
-CS:           IO 05
-DC:           IO 23
-RST:          IO 26
-BL aka BKLIT: IO 27
+MOSI IO 19 (aka SDA)
+SCLK IO 18 (aka SCK)
+CS:  IO 05
+DC:  IO 23
+RST: IO 26
+BL:  IO 27 (aka BKLIT)
 
 Lilygo T-Wristband (non-LSM9DS1 version):
-MISO:         P013
-MOSI aka SDA: P014
-SCLK aka SCK: P012
-CS:           P02
-DC:           P03
-RST:          P04
-BL aka BKLIT: P07
+MISO: P013
+MOSI: P014 (aka SDA)
+SCLK: P012 (aka SCK)
+CS:   P02
+DC:   P03
+RST:  P04
+BL:   P07  (aka BKLIT)
 */
 class ColorTft extends AbstractDriver:
   flags ::= FLAG_TRUE_COLOR | FLAG_PARTIAL_UPDATES
