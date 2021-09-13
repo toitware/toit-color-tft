@@ -133,7 +133,7 @@ class ColorTft extends AbstractDriver:
 
   // Pin numbers.
   device_ := ?
-  reset_/gpio.Pin := ?         // Active low reset line.
+  reset_/gpio.Pin? := ?         // Active low reset line.
   backlight_/gpio.Pin? := ?
   // Config byte.
   madctl_/int := ?
@@ -143,7 +143,7 @@ class ColorTft extends AbstractDriver:
   cmd_buffer_/ByteArray ::= ByteArray 1
   buffer_/ByteArray ::= ?
 
-  constructor .device_ .width .height --reset/gpio.Pin --backlight/gpio.Pin?=null --x_offset/int=0 --y_offset/int=0 --invert_colors/bool=false --flags/int=0:
+  constructor .device_ .width .height --reset/gpio.Pin? --backlight/gpio.Pin?=null --x_offset/int=0 --y_offset/int=0 --invert_colors/bool=false --flags/int=0:
     x_offset_ = x_offset
     y_offset_ = y_offset
     invert_colors_ = invert_colors
@@ -154,12 +154,13 @@ class ColorTft extends AbstractDriver:
 
     sixteen_bit_mode_ = (flags & COLOR_TFT_16_BIT_MODE) != 0
 
-    reset_.config --output
     if backlight_: backlight_.config --output
-
-    reset_.set 0
+    if reset_:
+      reset_.config --output
+      reset_.set 0
     sleep --ms=10
-    reset_.set 1
+    if reset_:
+      reset_.set 1
 
     // I see occasional glitches if this is less than 18.
     sleep --ms=18
