@@ -74,11 +74,14 @@ get_display -> TrueColorPixelDisplay:
                                          // MHz x    y    xoff yoff sda clock cs  dc  reset backlight invert
   M5_STACK_16_BIT_LANDSCAPE_SETTINGS ::= [  40, 320, 240, 0,   0,   23, 18,   14, 27, 33,   32,       false, COLOR_TFT_16_BIT_MODE ]
   WROVER_16_BIT_LANDSCAPE_SETTINGS   ::= [  40, 320, 240, 0,   0,   23, 19,   22, 21, 18,   -5,       false, COLOR_TFT_16_BIT_MODE | COLOR_TFT_FLIP_XY ]
+  // These are the settings for the LILYGO watch.
   LILYGO_16_BIT_LANDSCAPE_SETTINGS   ::= [  20, 80,  160, 26,  1,   19, 18,   5 , 23, 26,   27,       true,  COLOR_TFT_16_BIT_MODE ]
+  // These are the settings for the LILYGO TTGO T Display module, thanks to Nir Adler.
+  LILYGO_TTGO_T_DISPLAY_SETTINGS     ::= [  20, 240, 135, 0,   0,   21, 18,   5,  16, null, 4,        false, COLOR_TFT_16_BIT_MODE ]
   FEATHERWING_16_BIT_SETTINGS        ::= [  20, 320, 240, 0,   0,   23, 22,   15, 33, null, null,     false, COLOR_TFT_16_BIT_MODE | COLOR_TFT_FLIP_XY ]
 
   // Pick one of the above.
-  s := LILYGO_16_BIT_LANDSCAPE_SETTINGS
+  s := LILYGO_TTGO_T_DISPLAY_SETTINGS
 
   hz            := 1_000_000 * s[0]
   width         := s[1]
