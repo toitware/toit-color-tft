@@ -34,8 +34,8 @@ get_display -> TrueColorPixelDisplay:
   clock         := gpio.Pin s[6]
   cs            := gpio.Pin s[7]
   dc            := gpio.Pin s[8]
-  reset         := gpio.Pin s[9]
-  backlight     := s[10] >= 0 ? gpio.Pin s[10] : null
+  reset         := s[9] == null ? null : gpio.Pin s[9]
+  backlight     := s[10] == null ? null : gpio.Pin s[10]
   invert_colors := s[11]
   flags         := s[12]
 
