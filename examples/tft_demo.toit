@@ -17,16 +17,16 @@ import spi
 
 get_display -> TrueColorPixelDisplay:
                                                 // MHz x    y    xoff yoff sda clock cs  dc  reset backlight invert
-  M5_STACK_CORE_2_16_BIT_LANDSCAPE_SETTINGS ::= [  40, 320, 240, 0,   0,   23, 18,   5,  15, null, null,     true,  COLOR_TFT_16_BIT_MODE ]
   M5_STACK_16_BIT_LANDSCAPE_SETTINGS        ::= [  40, 320, 240, 0,   0,   23, 18,   14, 27, 33,   32,       false, COLOR_TFT_16_BIT_MODE ]
+  // Note: For the M5Stack Core2 you also need the m5stack_core2 package to
+  // power up the display.
+  M5_STACK_CORE_2_16_BIT_LANDSCAPE_SETTINGS ::= [  40, 320, 240, 0,   0,   23, 18,   5,  15, null, null,     true,  COLOR_TFT_16_BIT_MODE ]
   WROVER_16_BIT_LANDSCAPE_SETTINGS          ::= [  40, 320, 240, 0,   0,   23, 19,   22, 21, 18,   -5,       false, COLOR_TFT_16_BIT_MODE | COLOR_TFT_FLIP_XY ]
   LILYGO_16_BIT_LANDSCAPE_SETTINGS          ::= [  20, 80,  160, 26,  1,   19, 18,   5 , 23, 26,   27,       true,  COLOR_TFT_16_BIT_MODE ]
   FEATHERWING_16_BIT_SETTINGS               ::= [  20, 320, 240, 0,   0,   23, 22,   15, 33, null, null,     false, COLOR_TFT_16_BIT_MODE | COLOR_TFT_FLIP_XY ]
 
   // Pick one of the above.
-  // Note: For the M5Stack Core2 you also need the m5stack_core2 package to
-  // power up the display.
-  s := M5_STACK_CORE_2_16_BIT_LANDSCAPE_SETTINGS
+  s := M5_STACK_16_BIT_LANDSCAPE_SETTINGS
 
   hz            := 1_000_000 * s[0]
   width         := s[1]
