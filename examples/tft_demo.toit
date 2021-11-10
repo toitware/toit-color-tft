@@ -16,11 +16,14 @@ import pixel_display.true_color show *
 import spi
 
 get_display -> TrueColorPixelDisplay:
-                                         // MHz x    y    xoff yoff sda clock cs  dc  reset backlight invert
-  M5_STACK_16_BIT_LANDSCAPE_SETTINGS ::= [  40, 320, 240, 0,   0,   23, 18,   14, 27, 33,   32,       false, COLOR_TFT_16_BIT_MODE ]
-  WROVER_16_BIT_LANDSCAPE_SETTINGS   ::= [  40, 320, 240, 0,   0,   23, 19,   22, 21, 18,   -5,       false, COLOR_TFT_16_BIT_MODE | COLOR_TFT_FLIP_XY ]
-  LILYGO_16_BIT_LANDSCAPE_SETTINGS   ::= [  20, 80,  160, 26,  1,   19, 18,   5 , 23, 26,   27,       true,  COLOR_TFT_16_BIT_MODE ]
-  FEATHERWING_16_BIT_SETTINGS        ::= [  20, 320, 240, 0,   0,   23, 22,   15, 33, null, null,     false, COLOR_TFT_16_BIT_MODE | COLOR_TFT_FLIP_XY ]
+                                                // MHz x    y    xoff yoff sda clock cs  dc  reset backlight invert
+  M5_STACK_16_BIT_LANDSCAPE_SETTINGS        ::= [  40, 320, 240, 0,   0,   23, 18,   14, 27, 33,   32,       false, COLOR_TFT_16_BIT_MODE ]
+  // Note: For the M5Stack Core2 you also need the m5stack_core2 package to
+  // power up the display.
+  M5_STACK_CORE_2_16_BIT_LANDSCAPE_SETTINGS ::= [  40, 320, 240, 0,   0,   23, 18,   5,  15, null, null,     true,  COLOR_TFT_16_BIT_MODE ]
+  WROVER_16_BIT_LANDSCAPE_SETTINGS          ::= [  40, 320, 240, 0,   0,   23, 19,   22, 21, 18,   -5,       false, COLOR_TFT_16_BIT_MODE | COLOR_TFT_FLIP_XY ]
+  LILYGO_16_BIT_LANDSCAPE_SETTINGS          ::= [  20, 80,  160, 26,  1,   19, 18,   5 , 23, 26,   27,       true,  COLOR_TFT_16_BIT_MODE ]
+  FEATHERWING_16_BIT_SETTINGS               ::= [  20, 320, 240, 0,   0,   23, 22,   15, 33, null, null,     false, COLOR_TFT_16_BIT_MODE | COLOR_TFT_FLIP_XY ]
 
   // Pick one of the above.
   s := M5_STACK_16_BIT_LANDSCAPE_SETTINGS
@@ -145,7 +148,7 @@ main:
     tft.draw
     next := Time.monotonic_us
     // Scale frame time by some random factor and display it on the histogram.
-    diff := (next - last) >> 12
+    diff := (next - last) >> 11
     frame.text = "$(%3s (next - last) / 1000)ms"
     grey_histo.add diff
     red_histo.add diff - 50
