@@ -1,17 +1,15 @@
 prefixes:
   color_tft: ..
-  pixel_display: toit-pixel-display
+  pixel_display: pixel_display
   roboto: toit-font-google-100dpi-roboto
 packages:
   ..:
     path: ..
     prefixes:
-      pixel_display: toit-pixel-display
+      pixel_display: pixel_display
+  pixel_display:
+    path: ../../toit-pixel-display
   toit-font-google-100dpi-roboto:
     url: github.com/toitware/toit-font-google-100dpi-roboto
     version: 1.1.0
     hash: 7f34330ed3cfbae1f077f1bd7fa48d4ad484b291
-  toit-pixel-display:
-    url: github.com/toitware/toit-pixel-display
-    version: 1.2.0
-    hash: 417f476dd90e096bde74820203277bfaec88d9ca
