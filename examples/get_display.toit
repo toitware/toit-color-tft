@@ -15,7 +15,7 @@ M5_STACK_CORE_2_16_BIT_LANDSCAPE_SETTINGS ::= [  40, 320, 240, 0,   0,   23, 18,
 // ESP-WROVER-KIT v4.1
 WROVER_16_BIT_LANDSCAPE_SETTINGS          ::= [  10, 320, 240, 0,   0,   23, 19,   22, 21, 18,   -5,       false, COLOR_TFT_16_BIT_MODE | COLOR_TFT_FLIP_XY ]
 LILYGO_16_BIT_LANDSCAPE_SETTINGS          ::= [  20, 80,  160, 26,  1,   19, 18,   5 , 23, 26,   27,       true,  COLOR_TFT_16_BIT_MODE ]
-// https://www.aliexpress.com/item/33048962331.html
+// http://www.lilygo.cn/prod_view.aspx?Id=1126
 LILYGO_TTGO_BIT_LANDSCAPE_SETTINGS        ::= [  20, 135, 240, 51, 40,   19, 18,   5 , 16, 23,    4,       true,  COLOR_TFT_16_BIT_MODE ]
 FEATHERWING_16_BIT_SETTINGS               ::= [  20, 320, 240, 0,   0,   23, 22,   15, 33, null, null,     false, COLOR_TFT_16_BIT_MODE | COLOR_TFT_FLIP_XY ]
 
