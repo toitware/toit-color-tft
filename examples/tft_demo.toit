@@ -14,58 +14,10 @@ import pixel_display.histogram show TrueColorHistogram
 import pixel_display.texture show *
 import pixel_display.true_color show *
 import spi
-
-get_display -> TrueColorPixelDisplay:
-                                                // MHz x    y    xoff yoff sda clock cs  dc  reset backlight invert
-  M5_STACK_16_BIT_LANDSCAPE_SETTINGS        ::= [  40, 320, 240, 0,   0,   23, 18,   14, 27, 33,   32,       false, COLOR_TFT_16_BIT_MODE ]
-  // Note: For the M5Stack Core2 you also need the m5stack_core2 package to
-  // power up the display.
-  M5_STACK_CORE_2_16_BIT_LANDSCAPE_SETTINGS ::= [  40, 320, 240, 0,   0,   23, 18,   5,  15, null, null,     true,  COLOR_TFT_16_BIT_MODE ]
-  WROVER_16_BIT_LANDSCAPE_SETTINGS          ::= [  40, 320, 240, 0,   0,   23, 19,   22, 21, 18,   -5,       false, COLOR_TFT_16_BIT_MODE | COLOR_TFT_FLIP_XY ]
-  LILYGO_16_BIT_LANDSCAPE_SETTINGS          ::= [  20, 80,  160, 26,  1,   19, 18,   5 , 23, 26,   27,       true,  COLOR_TFT_16_BIT_MODE ]
-  FEATHERWING_16_BIT_SETTINGS               ::= [  20, 320, 240, 0,   0,   23, 22,   15, 33, null, null,     false, COLOR_TFT_16_BIT_MODE | COLOR_TFT_FLIP_XY ]
-
-  // Pick one of the above.
-  s := M5_STACK_16_BIT_LANDSCAPE_SETTINGS
-
-  hz            := 1_000_000 * s[0]
-  width         := s[1]
-  height        := s[2]
-  x_offset      := s[3]
-  y_offset      := s[4]
-  mosi          := gpio.Pin s[5]
-  clock         := gpio.Pin s[6]
-  cs            := gpio.Pin s[7]
-  dc            := gpio.Pin s[8]
-  reset         := s[9] == null ? null : gpio.Pin s[9]
-  backlight     := s[10] == null ? null : gpio.Pin s[10]
-  invert_colors := s[11]
-  flags         := s[12]
-
-  bus := spi.Bus
-    --mosi=mosi
-    --clock=clock
-
-  device := bus.device
-    --cs=cs
-    --dc=dc
-    --frequency=hz
-
-  driver := ColorTft device width height
-    --reset=reset
-    --backlight=backlight
-    --x_offset=x_offset
-    --y_offset=y_offset
-    --flags=flags
-    --invert_colors=invert_colors
-
-  tft := TrueColorPixelDisplay driver
-
-  return tft
+import .get_display
 
 main:
-  tft := get_display
-
+  tft := get_display M5_STACK_16_BIT_LANDSCAPE_SETTINGS
   tft.background = get_rgb 0x12 0x03 0x25
   width := 320
   height := 240
@@ -140,7 +92,7 @@ main:
       x_axis.set_transform histo_transform
       y_axis.set_transform histo_transform
       barcode_transform = (barcode_transform.translate 50 50).rotate_left.translate -50 -50
-    else if barcode.get_transform != barcode_transform:
+    if barcode.transform != barcode_transform:
       barcode.set_transform barcode_transform
     red.move_to red_x 60
     red.color = get_rgb 0xff 0x7f + red_x 0x7f + red_x

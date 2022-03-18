@@ -14,6 +14,7 @@ import pixel_display.true_color show BLACK WHITE get_rgb
 // If this import fails you need to run `toit pkg fetch` in this directory.
 import roboto.bold_36 as roboto_36_bold
 import spi
+import .get_display
 
 DAYS ::= ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 MONTHS ::= ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
@@ -24,7 +25,7 @@ MONTHS ::= ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"
 // once every 10 seconds.  The date is written either above or below the
 // time, depending on where there is space.
 main:
-  tft := get_display
+  tft := get_display LILYGO_16_BIT_LANDSCAPE_SETTINGS
   tft.background = BLACK
   sans := Font [sans_14.ASCII]
   sans_big := Font [roboto_36_bold.ASCII]
@@ -69,48 +70,3 @@ main:
     seconds.text = "$(%02d local.s)"
     tft.draw
     sleep --ms=1000
-
-get_display -> TrueColorPixelDisplay:
-                                         // MHz x    y    xoff yoff sda clock cs  dc  reset backlight invert
-  M5_STACK_16_BIT_LANDSCAPE_SETTINGS ::= [  40, 320, 240, 0,   0,   23, 18,   14, 27, 33,   32,       false, COLOR_TFT_16_BIT_MODE ]
-  WROVER_16_BIT_LANDSCAPE_SETTINGS   ::= [  40, 320, 240, 0,   0,   23, 19,   22, 21, 18,   -5,       false, COLOR_TFT_16_BIT_MODE | COLOR_TFT_FLIP_XY ]
-  LILYGO_16_BIT_LANDSCAPE_SETTINGS   ::= [  20, 80,  160, 26,  1,   19, 18,   5 , 23, 26,   27,       true,  COLOR_TFT_16_BIT_MODE ]
-  FEATHERWING_16_BIT_SETTINGS        ::= [  20, 320, 240, 0,   0,   23, 22,   15, 33, null, null,     false, COLOR_TFT_16_BIT_MODE | COLOR_TFT_FLIP_XY ]
-
-  // Pick one of the above.
-  s := LILYGO_16_BIT_LANDSCAPE_SETTINGS
-
-  hz            := 1_000_000 * s[0]
-  width         := s[1]
-  height        := s[2]
-  x_offset      := s[3]
-  y_offset      := s[4]
-  mosi          := gpio.Pin s[5]
-  clock         := gpio.Pin s[6]
-  cs            := gpio.Pin s[7]
-  dc            := gpio.Pin s[8]
-  reset         := s[9] == null ? null : gpio.Pin s[9]
-  backlight     := s[10] == null ? null : gpio.Pin s[10]
-  invert_colors := s[11]
-  flags         := s[12]
-
-  bus := spi.Bus
-    --mosi=mosi
-    --clock=clock
-
-  device := bus.device
-    --cs=cs
-    --dc=dc
-    --frequency=hz
-
-  driver := ColorTft device width height
-    --reset=reset
-    --backlight=backlight
-    --x_offset=x_offset
-    --y_offset=y_offset
-    --flags=flags
-    --invert_colors=invert_colors
-
-  tft := TrueColorPixelDisplay driver
-
-  return tft

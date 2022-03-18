@@ -13,5 +13,5 @@ packages:
     hash: 7f34330ed3cfbae1f077f1bd7fa48d4ad484b291
   toit-pixel-display:
     url: github.com/toitware/toit-pixel-display
-    version: 1.2.0
-    hash: 417f476dd90e096bde74820203277bfaec88d9ca
+    version: 1.5.0
+    hash: 359a4a5734b350f032cf81b971e5a065c73f6588
