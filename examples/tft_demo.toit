@@ -17,7 +17,7 @@ import spi
 import .get_display
 
 main:
-  tft := get_display LILYGO_TTGO_BIT_LANDSCAPE_SETTINGS //  M5_STACK_16_BIT_LANDSCAPE_SETTINGS
+  tft := get_display M5_STACK_16_BIT_LANDSCAPE_SETTINGS
   tft.background = get_rgb 0x12 0x03 0x25
   width := 320
   height := 240
