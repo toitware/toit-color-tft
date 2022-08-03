@@ -6,8 +6,8 @@ import bitmap show *
 import color_tft show *
 import font.matthew_welch.tiny as tiny_4
 import font show *
-import font.x11_100dpi.sans.sans_10 as sans_10
-import font.x11_100dpi.sans.sans_24_bold as sans_24_bold
+import font_x11_adobe.sans_10
+import font_x11_adobe.sans_24_bold
 import gpio
 import pixel_display show *
 import pixel_display.histogram show TrueColorHistogram
