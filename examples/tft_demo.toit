@@ -4,7 +4,7 @@
 
 import bitmap show *
 import color_tft show *
-import font.matthew_welch.tiny as tiny_4
+import font_tiny.tiny as tiny_4
 import font show *
 import font_x11_adobe.sans_10
 import font_x11_adobe.sans_24_bold
