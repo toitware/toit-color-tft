@@ -4,7 +4,7 @@
 
 import color_tft show *
 import font show *
-import font.x11_100dpi.sans.sans_14_bold as sans_14
+import font_x11_adobe.sans_14_bold as sans_14
 import gpio
 import pixel_display show *
 import pixel_display.texture show TEXT_TEXTURE_ALIGN_RIGHT TEXT_TEXTURE_ALIGN_CENTER
