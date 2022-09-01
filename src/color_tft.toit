@@ -21,7 +21,8 @@ import gpio
 COLOR_TFT_FLIP_X ::= 0x40   // Flip across the X axis.
 COLOR_TFT_FLIP_Y ::= 0x80   // Flip across the Y axis.
 COLOR_TFT_FLIP_XY ::= 0x20  // Reverse the X and Y axes.
-COLOR_TFT_MADCTL_MASK_ ::= 0xe0
+COLOR_TFT_REVERSE_R_B ::= 0x08  // Reverse the red and blue channels.
+COLOR_TFT_MADCTL_MASK_ ::= 0xe8
 
 // If you pick this then the r and b channels are reduced from 6 bits to 5
 // bits, and the display is updated faster.

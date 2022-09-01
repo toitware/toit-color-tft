@@ -14,6 +14,8 @@ import pixel_display.true_color show BLACK WHITE get_rgb
 // If this import fails you need to run `toit pkg fetch` in this directory.
 import roboto.bold_36 as roboto_36_bold
 import spi
+import ntp
+import esp32
 import .get_display
 
 DAYS ::= ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
@@ -25,7 +27,8 @@ MONTHS ::= ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"
 // once every 10 seconds.  The date is written either above or below the
 // time, depending on where there is space.
 main:
-  tft := get_display LILYGO_16_BIT_LANDSCAPE_SETTINGS
+  set_time_from_net
+  tft := get_display LILYGO_TTGO_T_16_BIT_LANDSCAPE_SETTINGS
   tft.background = BLACK
   sans := Font [sans_14.ASCII]
   sans_big := Font [roboto_36_bold.ASCII]
@@ -70,3 +73,14 @@ main:
     seconds.text = "$(%02d local.s)"
     tft.draw
     sleep --ms=1000
+
+set_time_from_net:
+  set_timezone "CET-1CEST,M3.5.0,M10.5.0/3"  // Daylight savings rules in the EU as of 2022.
+  now := Time.now.utc
+  if now.year < 1981:
+    result ::= ntp.synchronize
+    if result:
+      esp32.adjust_real_time_clock result.adjustment
+      print "Set time to $Time.now by adjusting $result.adjustment"
+    else:
+      print "ntp: synchronization request failed"
