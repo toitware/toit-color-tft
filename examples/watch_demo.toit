@@ -14,6 +14,8 @@ import pixel_display.true_color show BLACK WHITE get_rgb
 // If this import fails you need to run `toit pkg fetch` in this directory.
 import roboto.bold_36 as roboto_36_bold
 import spi
+import ntp
+import esp32
 import .get_display
 
 DAYS ::= ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
@@ -25,13 +27,22 @@ MONTHS ::= ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"
 // once every 10 seconds.  The date is written either above or below the
 // time, depending on where there is space.
 main:
-  tft := get_display LILYGO_16_BIT_LANDSCAPE_SETTINGS
+  set_time_from_net
+  tft := get_display LILYGO_TTGO_T_16_BIT_LANDSCAPE_SETTINGS
   tft.background = BLACK
   sans := Font [sans_14.ASCII]
   sans_big := Font [roboto_36_bold.ASCII]
   sans_big_context := tft.context --alignment=TEXT_TEXTURE_ALIGN_RIGHT --landscape --color=(get_rgb 50 255 50) --font=sans_big
   sans_context := tft.context --landscape --color=(get_rgb 230 230 50) --font=sans
   date_context := sans_context.with --alignment=TEXT_TEXTURE_ALIGN_CENTER
+
+  extent := sans_big.text_extent "00 00"
+  tft_width := max tft.width_ tft.height_
+  tft_height := min tft.width_ tft.height_
+  MIN_X ::= extent[0] + 1
+  MAX_X ::= tft_width - (sans.pixel_width "00")
+  MIN_Y ::= extent[1]
+  MAX_Y ::= tft_height
 
   x := 110
   y := 60
@@ -53,8 +64,8 @@ main:
     if (random 10) < 1:
       x += (random 3) - 1
       y += (random 3) - 1
-      x = max 90 (min 130 x)
-      y = max 32 (min 80 y)
+      x = max MIN_X (min MAX_X x)
+      y = max MIN_Y (min MAX_Y y)
       time.move_to x y
       seconds.move_to x y
       colon.move_to x - colon_offset y
@@ -70,3 +81,14 @@ main:
     seconds.text = "$(%02d local.s)"
     tft.draw
     sleep --ms=1000
+
+set_time_from_net:
+  set_timezone "CET-1CEST,M3.5.0,M10.5.0/3"  // Daylight savings rules in the EU as of 2022.
+  now := Time.now.utc
+  if now.year < 1981:
+    result ::= ntp.synchronize
+    if result:
+      esp32.adjust_real_time_clock result.adjustment
+      print "Set time to $Time.now by adjusting $result.adjustment"
+    else:
+      print "ntp: synchronization request failed"
