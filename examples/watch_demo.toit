@@ -36,6 +36,14 @@ main:
   sans_context := tft.context --landscape --color=(get_rgb 230 230 50) --font=sans
   date_context := sans_context.with --alignment=TEXT_TEXTURE_ALIGN_CENTER
 
+  extent := sans_big.text_extent "00 00"
+  tft_width := max tft.width_ tft.height_
+  tft_height := min tft.width_ tft.height_
+  MIN_X ::= extent[0] + 1
+  MAX_X ::= tft_width - (sans.pixel_width "00")
+  MIN_Y ::= extent[1]
+  MAX_Y ::= tft_height
+
   x := 110
   y := 60
   // Although sans is not a fixed width font, the digits are all the same
@@ -56,8 +64,8 @@ main:
     if (random 10) < 1:
       x += (random 3) - 1
       y += (random 3) - 1
-      x = max 90 (min 130 x)
-      y = max 32 (min 80 y)
+      x = max MIN_X (min MAX_X x)
+      y = max MIN_Y (min MAX_Y y)
       time.move_to x y
       seconds.move_to x y
       colon.move_to x - colon_offset y
