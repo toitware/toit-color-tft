@@ -41,7 +41,7 @@ main:
   tft_height := min tft.width_ tft.height_
   MIN_X ::= extent[0] + 1
   MAX_X ::= tft_width - (sans.pixel_width "00")
-  MIN_Y ::= extent[1]
+  MIN_Y ::= extent[1] + 1
   MAX_Y ::= tft_height
 
   x := 110

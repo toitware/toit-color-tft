@@ -235,7 +235,7 @@ class ColorTft extends AbstractDriver:
     set_range_ COLOR_TFT_RASET_ top+y_offset_ bottom+y_offset_
     send COLOR_TFT_RAMWR_  // Reset write pointer to caset and raset positions.
 
-    table := invert_colors_ ? INVERT : IDENTITY_LOOKUP_TABLE
+    table := invert_colors_ ? INVERT : null
 
     if sixteen_bit_mode_:
       // Using the mode where you pack 3 pixels in two bytes.  5 bits for red,
