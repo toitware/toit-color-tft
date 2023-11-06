@@ -1,3 +1,5 @@
+name: color_tft
+description: Driver for 18 bit TFT color displays.
 dependencies:
   pixel_display:
     url: github.com/toitware/toit-pixel-display
