@@ -12,21 +12,27 @@ packages:
       pixel_display: toit-pixel-display
   pkg-font-tiny:
     url: github.com/toitlang/pkg-font-tiny
+    name: font_tiny
     version: 0.1.0
     hash: 1506cad47ee738f8a9145885abb5fa0be918b2b5
   pkg-font-x11-adobe:
     url: github.com/toitlang/pkg-font-x11-adobe
+    name: font_x11_adobe
     version: 0.1.0
     hash: f844400722165252148f087cdf189abab0a47f3d
   pkg-ntp:
     url: github.com/toitlang/pkg-ntp
+    name: ntp
     version: 1.0.0
     hash: 1c3cc4a4819f459393f00efc576f66f838665719
   toit-font-google-100dpi-roboto:
     url: github.com/toitware/toit-font-google-100dpi-roboto
+    name: roboto
     version: 1.1.0
     hash: 7f34330ed3cfbae1f077f1bd7fa48d4ad484b291
   toit-pixel-display:
-    url: github.com/toitware/toit-pixel-display
-    version: 1.6.0
-    hash: 39de82f680e27961e39ca24ba94520f21759370c
+    path: ../../toit-pixel-display
+    prefixes:
+      png_tools: toit-png-tools
+  toit-png-tools:
+    path: ../../toit-png-tools

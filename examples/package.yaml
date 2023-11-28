@@ -11,8 +11,7 @@ dependencies:
     url: github.com/toitlang/pkg-ntp
     version: ^1.0.0
   pixel_display:
-    url: github.com/toitware/toit-pixel-display
-    version: ^1.6.0
+    path: ../../toit-pixel-display/
   roboto:
     url: github.com/toitware/toit-font-google-100dpi-roboto
     version: ^1.1.0

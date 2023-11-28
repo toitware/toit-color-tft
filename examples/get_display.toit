@@ -9,6 +9,7 @@ import pixel_display show *
 
                                               // MHz x    y    xoff yoff sda clock cs  dc  reset backlight invert
 M5_STACK_16_BIT_LANDSCAPE_SETTINGS        ::= [  40, 320, 240, 0,   0,   23, 18,   14, 27, 33,   32,       false, COLOR_TFT_16_BIT_MODE ]
+M5_STACK_24_BIT_LANDSCAPE_SETTINGS        ::= [  40, 320, 240, 0,   0,   23, 18,   14, 27, 33,   32,       false, 0]
 // Note: For the M5Stack Core2 you also need the m5stack_core2 package to
 // power up the display.
 M5_STACK_CORE_2_16_BIT_LANDSCAPE_SETTINGS ::= [  40, 320, 240, 0,   0,   23, 18,   5,  15, null, null,     true,  COLOR_TFT_16_BIT_MODE ]
