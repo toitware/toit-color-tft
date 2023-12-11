@@ -8,6 +8,7 @@
 import font show *
 import pixel_display show *
 import pixel_display.element show *
+import pixel_display.slider show *
 import pixel_display.gradient show *
 import pixel_display.style show *
 import gpio
@@ -32,6 +33,19 @@ main args:
       GradientSpecifier --color=0xa0a0a0 100,
       ]
 
+  sans10 := Font.get "sans10"
+
+  style := Style
+      --type-map={
+          "slider": Style {
+              "background-hi": heat,
+              "background-lo": cold,
+              "width": 20,
+              "height": 100,
+          },
+          "label": Style --font=sans10 --color=0xffffff,
+      }
+
   sliders := List 5:
       Slider --x=(30 + 40 * it) --y=50 --value=(10 + it * 20)
   labels := List 5:
@@ -41,29 +55,22 @@ main args:
 
   display.add content
 
-  sans10 := Font.get "sans10"
-
-  style := Style
-      --type-map={
-          "vertical-slider": Style {
-              "background-hi": heat,
-              "background-lo": cold,
-              "width": 20,
-              "height": 100,
-          },
-          "label": Style --font=sans10 --color=0xffffff,
-      }
-
   content.set_styles [style]
 
-  Profiler.install false
-  Profiler.start
+  //Profiler.install false
+  //Profiler.start
+  start := Time.monotonic-us
   display.draw
-  Profiler.stop
-  Profiler.report "slider"
+  end := Time.monotonic-us
+  print "Draw in $((end - start) / 1000)ms"
+  //Profiler.stop
+  //Profiler.report "slider"
 
-  1000.repeat:
+  start = Time.monotonic-us
+  500.repeat:
     slider := random 5
     sliders[slider].value = random 100
 
     display.draw
+  end = Time.monotonic-us
+  print "500 in $((end - start) / 1000)ms"

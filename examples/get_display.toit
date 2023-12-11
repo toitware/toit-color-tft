@@ -27,7 +27,7 @@ pin_for num/int? -> gpio.Pin?:
     return gpio.InvertedPin (gpio.Pin -num)
   return gpio.Pin num
 
-get_display setting/List -> TrueColorPixelDisplay:
+get_display setting/List -> PixelDisplay:
 
   hz            := 1_000_000 * setting[0]
   width         := setting[1]
@@ -60,7 +60,7 @@ get_display setting/List -> TrueColorPixelDisplay:
     --flags=flags
     --invert_colors=invert_colors
 
-  tft := TrueColorPixelDisplay driver
+  tft := PixelDisplay.true_color driver
 
   return tft
 
