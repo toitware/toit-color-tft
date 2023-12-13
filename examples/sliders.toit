@@ -37,11 +37,9 @@ main args:
 
   style := Style
       --type-map={
-          "slider": Style {
+          "slider": Style --w=20 --h=100 {
               "background-hi": heat,
               "background-lo": cold,
-              "width": 20,
-              "height": 100,
           },
           "label": Style --font=sans10 --color=0xffffff,
       }

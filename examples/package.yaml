@@ -10,6 +10,9 @@ dependencies:
   ntp:
     url: github.com/toitlang/pkg-ntp
     version: ^1.0.0
+  pictogrammers_icons:
+    url: github.com/toitware/toit-icons-pictogrammers
+    version: ^1.0.0
   pixel_display:
     path: ../../toit-pixel-display/
   roboto:
