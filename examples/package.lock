@@ -4,6 +4,7 @@ prefixes:
   font_tiny: pkg-font-tiny
   font_x11_adobe: pkg-font-x11-adobe
   ntp: pkg-ntp
+  pictogrammers_icons: toit-icons-pictogrammers
   pixel_display: toit-pixel-display
   roboto: toit-font-google-100dpi-roboto
 packages:
@@ -31,6 +32,11 @@ packages:
     name: roboto
     version: 1.1.0
     hash: 7f34330ed3cfbae1f077f1bd7fa48d4ad484b291
+  toit-icons-pictogrammers:
+    url: github.com/toitware/toit-icons-pictogrammers
+    name: pictogrammers_icons
+    version: 1.0.0
+    hash: 5ac660cc480d5da1fec72e1b24d425ce978419b7
   toit-pixel-display:
     url: github.com/toitware/toit-pixel-display
     name: pixel_display

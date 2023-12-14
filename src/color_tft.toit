@@ -154,7 +154,7 @@ class ColorTft extends AbstractDriver:
     backlight_ = backlight
     reset_ = reset
     madctl_ = flags
-    buffer_ = ByteArray 1000
+    buffer_ = ByteArray 4096
 
     sixteen_bit_mode_ = (flags & COLOR_TFT_16_BIT_MODE) != 0
 
