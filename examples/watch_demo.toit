@@ -7,8 +7,7 @@ import font show *
 import font_x11_adobe.sans_14_bold as sans_14
 import gpio
 import pixel_display show *
-import pixel_display.texture show TEXT_TEXTURE_ALIGN_RIGHT TEXT_TEXTURE_ALIGN_CENTER
-import pixel_display.true_color show BLACK WHITE get_rgb
+import pixel_display.true_color show BLACK WHITE
 // Roboto is a package installed with
 // toit pkg install toit-font-google-100dpi-roboto
 // If this import fails you need to run `toit pkg fetch` in this directory.
@@ -32,8 +31,10 @@ main:
   tft.background = BLACK
   sans := Font [sans_14.ASCII]
   sans_big := Font [roboto_36_bold.ASCII]
-  sans_big_context := tft.context --alignment=TEXT_TEXTURE_ALIGN_RIGHT --landscape --color=(get_rgb 50 255 50) --font=sans_big
-  sans_context := tft.context --landscape --color=(get_rgb 230 230 50) --font=sans
+  sans_big_context := tft.context --alignment=TEXT_TEXTURE_ALIGN_RIGHT --landscape --color=0x32ff32 --font=sans_big
+32
+E6
+  sans_context := tft.context --landscape --color=0xe6e632 --font=sans
   date_context := sans_context.with --alignment=TEXT_TEXTURE_ALIGN_CENTER
 
   extent := sans_big.text_extent "00 00"
