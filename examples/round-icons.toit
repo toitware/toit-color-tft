@@ -14,10 +14,10 @@ import pixel-display.element show *
 import pixel-display.gradient show *
 import pixel-display.style show *
 
-import .get_display
+import .get-display
 
 main args:
-  display := get_display M5_STACK_24_BIT_LANDSCAPE_SETTINGS
+  display := get-display M5-STACK-24-BIT-LANDSCAPE-SETTINGS
 
   background-gradient := GradientBackground --angle=150
       --specifiers=[
@@ -55,7 +55,7 @@ main args:
   // Also includes the initial style parameters.
   off-style := Style
       --type-map={
-          "label": Style --x=30 --y=47 --color=0xc0c0c0 {"alignment": ALIGN_CENTER},
+          "label": Style --x=30 --y=47 --color=0xc0c0c0 {"alignment": ALIGN-CENTER},
       }
       --class-map={
           "button-outer": Style --y=20 --w=70 --h=70      --border=rounded-35 --background=outer-background,
@@ -69,10 +69,7 @@ main args:
 
   display.set-styles [off-style]
 
-  start-all := Time.monotonic-us
   display.draw
-  end-all := Time.monotonic-us
-  print "Initial draw $((end-all - start-all) / 1000)ms"
 
   sleep --ms=500
 
@@ -82,9 +79,5 @@ main args:
         buttons[i].set-styles [on-style]
       else:
         buttons[i].set-styles [off-style]
-    start-on := Time.monotonic-us
     display.draw
-    end-on := Time.monotonic-us
-    print "Draw: $((end-on - start-on) / 1000)ms"
-
     sleep --ms=1000
