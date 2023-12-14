@@ -1,95 +1,133 @@
-// Copyright (C) 2021 Toitware ApS.
+// Copyright (C) 2023 Toitware ApS.
 // Use of this source code is governed by a Zero-Clause BSD license that can
 // be found in the EXAMPLES_LICENSE file.
 
-import color_tft show *
+// Digital clock on a TFT display.
+
+import color-tft show *
 import font show *
-import font_x11_adobe.sans_14_bold as sans_14
+import font-x11-adobe.sans-14-bold as sans-14
 import gpio
-import pixel_display show *
-import pixel_display.true_color show BLACK WHITE
+import pixel-display show *
+import pixel-display.element show *
+import pixel-display.style show *
 // Roboto is a package installed with
 // toit pkg install toit-font-google-100dpi-roboto
 // If this import fails you need to run `toit pkg fetch` in this directory.
-import roboto.bold_36 as roboto_36_bold
+import roboto.bold-36 as roboto-36-bold
 import spi
 import ntp
 import esp32
-import .get_display
+import .get-display
+
+// Daylight savings rules in the EU as of 2023.
+TIME-ZONE ::= "CET-1CEST,M3.5.0,M10.5.0/3"
+// Daylight savings rules in the UK as of 2023.
+// TIME-ZONE ::= "BST0GMT,M3.2.0/2:00:00,M11.1.0/2:00:00"
+// Daylight savings rules for California as of 2023.
+// TIME-ZONE ::= "PST8PDT,M3.2.0/2:00:00,M11.1.0/2:00:00"
+// Find more time zone strings at https://support.cyberdata.net/portal/en/kb/articles/010d63c0cfce3676151e1f2d5442e311
 
 DAYS ::= ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 MONTHS ::= ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
+SANS := Font [sans-14.ASCII]
+SANS-BIG := Font [roboto-36-bold.ASCII]
+
 // Write the time and date.
 // The time is hh:mm followed by the seconds in a smaller font.
 // In order to avoid burn-in, the display changes position randomly about
-// once every 10 seconds.  The date is written either above or below the
-// time, depending on where there is space.
+// once every 10 seconds.  The date is written below the time.
 main:
-  set_time_from_net
-  tft := get_display LILYGO_TTGO_T_16_BIT_LANDSCAPE_SETTINGS
-  tft.background = BLACK
-  sans := Font [sans_14.ASCII]
-  sans_big := Font [roboto_36_bold.ASCII]
-  sans_big_context := tft.context --alignment=TEXT_TEXTURE_ALIGN_RIGHT --landscape --color=0x32ff32 --font=sans_big
-32
-E6
-  sans_context := tft.context --landscape --color=0xe6e632 --font=sans
-  date_context := sans_context.with --alignment=TEXT_TEXTURE_ALIGN_CENTER
+  set-time-from-net
+  tft := get-display LILYGO-TTGO-T-16-BIT-LANDSCAPE-SETTINGS
 
-  extent := sans_big.text_extent "00 00"
-  tft_width := max tft.width_ tft.height_
-  tft_height := min tft.width_ tft.height_
-  MIN_X ::= extent[0] + 1
-  MAX_X ::= tft_width - (sans.pixel_width "00")
-  MIN_Y ::= extent[1] + 1
-  MAX_Y ::= tft_height
-
-  x := 110
-  y := 60
-  // Although sans is not a fixed width font, the digits are all the same
+  // Although SANS is not a fixed width font, the digits are all the same
   // width, so we can use zeros to measure the correct position of the blinking
   // colon.
-  colon_offset := (sans_big.pixel_width "00")
-  DATE_OFFSET := 33
-  ABOVE := 33
-  BELOW := 20
 
-  date := tft.text date_context x - DATE_OFFSET y - ABOVE ""
-  time := tft.text sans_big_context x y ""
-  colon := tft.text sans_big_context x - colon_offset y ""
-  seconds := tft.text sans_context x y ""
+  WIDTH-INDEX ::= 0
+  HEIGHT-INDEX ::= 1
+  h-m-extent := SANS-BIG.text-extent "00 00"
+  h-m-width := h-m-extent[WIDTH-INDEX]
+  h-m-height := h-m-extent[HEIGHT-INDEX]
+  colon-offset := SANS-BIG.pixel-width "00"
+  s-extent := SANS.text-extent "00"
+  s-width := s-extent[WIDTH-INDEX]
+  s-height := s-extent[HEIGHT-INDEX]
+
+  // Since we don't have auto-layout yet, we use the font measurements
+  // to place the elements in the box and determine the box size.
+  time-y := h-m-height
+  date-y := h-m-height + s-height + 6
+  seconds-x := h-m-width + 5
+  box-width := seconds-x + s-width
+  box-height := date-y + s-height
+
+  STYLE ::= Style
+      --class-map = {
+          "big": Style --color=0x32ff32 --font=SANS-BIG,
+          "sans": Style --color=0xe6e632 --font=SANS,
+      }
+      --id-map = {
+          "time": Style --x=0 --y=time-y,
+          "colon": Style --x=colon-offset --y=time-y,
+          "seconds": Style --x=seconds-x --y=time-y,
+          "date": Style --x=0 --y=date-y
+      }
+
+  tft-width := max tft.width tft.height
+  tft-height := min tft.width tft.height
+  MIN-X ::= 0
+  MAX-X ::= tft-width - box-width
+  MIN-Y ::= 0
+  MAX-Y ::= tft-height - box-height
+
+  x := 20
+  y := 20
+
+  top := Div --x=0 --y=0 --w=tft-width --h=tft-height --background=0x000000 [
+      Div --id="box" --x=x --y=y --w=box-width --h=box-height [
+          Label --id="date" --classes=["sans"],
+          Label --id="time" --classes=["big"],
+          Label --id="colon" --classes=["big"],
+          Label --id="seconds" --classes=["sans"],
+      ]
+  ]
+  tft.add top
+  tft.set-styles [STYLE]
+
+  box := top.get-element-by-id "box"
+  time := top.get-element-by-id "time"
+  colon := top.get-element-by-id "colon"
+  seconds := top.get-element-by-id "seconds"
+  date := top.get-element-by-id "date"
+
   blink := true
   while true:
     // About once every 10 seconds we move the display to avoid burn-in.
     if (random 10) < 1:
       x += (random 3) - 1
       y += (random 3) - 1
-      x = max MIN_X (min MAX_X x)
-      y = max MIN_Y (min MAX_Y y)
-      time.move_to x y
-      seconds.move_to x y
-      colon.move_to x - colon_offset y
-      if y < 60:
-        date.move_to x - DATE_OFFSET y + BELOW
-      else:
-        date.move_to x - DATE_OFFSET y - ABOVE
+      x = max MIN-X (min MAX-X x)
+      y = max MIN-Y (min MAX-Y y)
+      box.move-to x y
     local := Time.now.local
-    date.text = "$(DAYS[local.weekday % 7]) $(MONTHS[local.month - 1]) $(local.day)"
-    time.text = "$(%02d local.h) $(%02d local.m)"
-    colon.text = blink ? ":" : ""
+    date.label = "$(DAYS[local.weekday % 7]) $(MONTHS[local.month - 1]) $(local.day)"
+    time.label = "$(%02d local.h) $(%02d local.m)"
+    colon.label = blink ? ":" : ""
     blink = not blink
-    seconds.text = "$(%02d local.s)"
+    seconds.label = "$(%02d local.s)"
     tft.draw
     sleep --ms=1000
 
-set_time_from_net:
-  set_timezone "CET-1CEST,M3.5.0,M10.5.0/3"  // Daylight savings rules in the EU as of 2022.
+set-time-from-net:
+  set-timezone TIME-ZONE
   now := Time.now.utc
   if now.year < 1981:
     result ::= ntp.synchronize
     if result:
-      esp32.adjust_real_time_clock result.adjustment
+      esp32.adjust-real-time-clock result.adjustment
       print "Set time to $Time.now by adjusting $result.adjustment"
     else:
       print "ntp: synchronization request failed"

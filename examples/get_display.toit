@@ -28,7 +28,6 @@ pin_for num/int? -> gpio.Pin?:
   return gpio.Pin num
 
 get_display setting/List -> PixelDisplay:
-
   hz            := 1_000_000 * setting[0]
   width         := setting[1]
   height        := setting[2]
@@ -63,4 +62,3 @@ get_display setting/List -> PixelDisplay:
   tft := PixelDisplay.true_color driver
 
   return tft
-
