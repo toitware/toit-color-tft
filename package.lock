@@ -1,3 +1,4 @@
+sdk: ^2.0.0-alpha.121
 prefixes:
   pixel_display: toit-pixel-display
 packages:
