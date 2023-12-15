@@ -1,8 +1,10 @@
+sdk: ^2.0.0-alpha.121
 prefixes:
   color_tft: ..
   font_tiny: pkg-font-tiny
   font_x11_adobe: pkg-font-x11-adobe
   ntp: pkg-ntp
+  pictogrammers_icons: toit-icons-pictogrammers
   pixel_display: toit-pixel-display
   roboto: toit-font-google-100dpi-roboto
 packages:
@@ -12,21 +14,38 @@ packages:
       pixel_display: toit-pixel-display
   pkg-font-tiny:
     url: github.com/toitlang/pkg-font-tiny
+    name: font_tiny
     version: 0.1.0
     hash: 1506cad47ee738f8a9145885abb5fa0be918b2b5
   pkg-font-x11-adobe:
     url: github.com/toitlang/pkg-font-x11-adobe
+    name: font_x11_adobe
     version: 0.1.0
     hash: f844400722165252148f087cdf189abab0a47f3d
   pkg-ntp:
     url: github.com/toitlang/pkg-ntp
+    name: ntp
     version: 1.0.0
     hash: 1c3cc4a4819f459393f00efc576f66f838665719
   toit-font-google-100dpi-roboto:
     url: github.com/toitware/toit-font-google-100dpi-roboto
+    name: roboto
     version: 1.1.0
     hash: 7f34330ed3cfbae1f077f1bd7fa48d4ad484b291
+  toit-icons-pictogrammers:
+    url: github.com/toitware/toit-icons-pictogrammers
+    name: pictogrammers_icons
+    version: 1.0.0
+    hash: 5ac660cc480d5da1fec72e1b24d425ce978419b7
   toit-pixel-display:
     url: github.com/toitware/toit-pixel-display
-    version: 1.6.0
-    hash: 39de82f680e27961e39ca24ba94520f21759370c
+    name: pixel_display
+    version: 2.0.0
+    hash: b3b869c18e97f8e756c30bbcffb48e6bf95cdc50
+    prefixes:
+      png-tools: toit-png-tools
+  toit-png-tools:
+    url: github.com/toitware/toit-png-tools
+    name: png-tools
+    version: 1.0.0
+    hash: ee472ac9d4333a138206f9d3a817d3c5432d6f87

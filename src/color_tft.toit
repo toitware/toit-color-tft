@@ -132,6 +132,9 @@ class ColorTft extends AbstractDriver:
   x_offset_/int := ?
   y_offset_/int := ?
 
+  x_rounding: return 1
+  y_rounding: return 1
+
   // Pin numbers.
   device_ := ?
   reset_/gpio.Pin? := ?         // Active low reset line.
@@ -151,7 +154,7 @@ class ColorTft extends AbstractDriver:
     backlight_ = backlight
     reset_ = reset
     madctl_ = flags
-    buffer_ = ByteArray 1000
+    buffer_ = ByteArray 4096
 
     sixteen_bit_mode_ = (flags & COLOR_TFT_16_BIT_MODE) != 0
 

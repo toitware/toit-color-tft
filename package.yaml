@@ -1,6 +1,8 @@
 name: color_tft
 description: Driver for 18 bit TFT color displays.
+environment:
+  sdk: ^2.0.0-alpha.121
 dependencies:
   pixel_display:
     url: github.com/toitware/toit-pixel-display
-    version: ^1.2.0
+    version: ^2.0.0

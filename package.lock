@@ -1,0 +1,9 @@
+sdk: ^2.0.0-alpha.121
+prefixes:
+  pixel_display: toit-pixel-display
+packages:
+  toit-pixel-display:
+    url: github.com/toitware/toit-pixel-display
+    name: pixel_display
+    version: 1.6.1
+    hash: 61693447fcf73e7dd4044780fd7991c2d371b7ec
