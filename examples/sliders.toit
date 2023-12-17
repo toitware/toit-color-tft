@@ -6,17 +6,17 @@
 // change part of the text.
 
 import font show *
-import pixel_display show *
-import pixel_display.element show *
-import pixel_display.slider show *
-import pixel_display.gradient show *
-import pixel_display.style show *
+import pixel-display show *
+import pixel-display.element show *
+import pixel-display.slider show *
+import pixel-display.gradient show *
+import pixel-display.style show *
 import gpio
 import spi
-import .get_display
+import .get-display
 
 main args:
-  display := get_display M5_STACK_24_BIT_LANDSCAPE_SETTINGS
+  display := get-display M5-STACK-24-BIT-LANDSCAPE-SETTINGS
   display.background = 0x808080
   WIDTH ::= display.width
   HEIGHT ::= display.height
@@ -47,13 +47,13 @@ main args:
   sliders := List 5:
       Slider --x=(30 + 40 * it) --y=50 --value=(10 + it * 20)
   labels := List 5:
-      Label --x=(40 + 40 * it) --y=165 --label="$(%c 'A' + it)" --alignment=ALIGN_CENTER
+      Label --x=(40 + 40 * it) --y=165 --label="$(%c 'A' + it)" --alignment=ALIGN-CENTER
 
   content := Div --x=0 --y=0 --w=WIDTH --h=HEIGHT --background=0x202020 (sliders + labels)
 
   display.add content
 
-  content.set_styles [style]
+  content.set-styles [style]
 
   //Profiler.install false
   //Profiler.start
