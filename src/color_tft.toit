@@ -158,9 +158,9 @@ class ColorTft extends AbstractDriver:
 
     sixteen_bit_mode_ = (flags & COLOR_TFT_16_BIT_MODE) != 0
 
-    if backlight_: backlight_.config --output
+    if backlight_: backlight_.configure --output
     if reset_:
-      reset_.config --output
+      reset_.configure --output
       reset_.set 0
     sleep --ms=10
     if reset_:
