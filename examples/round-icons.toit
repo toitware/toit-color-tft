@@ -73,12 +73,11 @@ main args:
 
   sleep --ms=500
 
-  while true:
-    4.repeat: | on |
-      4.repeat: | i |
-        if i == on:
-          buttons[i].set-styles [on-style]
-        else:
-          buttons[i].set-styles [off-style]
-      display.draw
-      sleep --ms=1000
+  4.repeat: | on |
+    4.repeat: | i |
+      if i == on:
+        buttons[i].set-styles [on-style]
+      else:
+        buttons[i].set-styles [off-style]
+    display.draw
+    sleep --ms=1000
