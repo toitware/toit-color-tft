@@ -113,11 +113,11 @@ main:
       y = max MIN-Y (min MAX-Y y)
       box.move-to x y
     local := Time.now.local
-    date.label = "$(DAYS[local.weekday % 7]) $(MONTHS[local.month - 1]) $(local.day)"
-    time.label = "$(%02d local.h) $(%02d local.m)"
-    colon.label = blink ? ":" : ""
+    date.text = "$(DAYS[local.weekday % 7]) $(MONTHS[local.month - 1]) $(local.day)"
+    time.text = "$(%02d local.h) $(%02d local.m)"
+    colon.text = blink ? ":" : ""
     blink = not blink
-    seconds.label = "$(%02d local.s)"
+    seconds.text = "$(%02d local.s)"
     tft.draw
     sleep --ms=1000
 

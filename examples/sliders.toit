@@ -47,7 +47,7 @@ main args:
   sliders := List 5:
       Slider --x=(30 + 40 * it) --y=50 --value=(10 + it * 20)
   labels := List 5:
-      Label --x=(40 + 40 * it) --y=165 --label="$(%c 'A' + it)" --alignment=ALIGN-CENTER
+      Label --x=(40 + 40 * it) --y=165 --text="$(%c 'A' + it)" --alignment=ALIGN-CENTER
 
   content := Div --x=0 --y=0 --w=WIDTH --h=HEIGHT --background=0x202020 (sliders + labels)
 
