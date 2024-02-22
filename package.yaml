@@ -1,5 +1,5 @@
 name: color_tft
-description: Driver for 18 bit TFT color displays.
+description: Driver for 18 bit TFT color displays based on the ILI9341, ILI9488, ST7789V or ST7735 display controllers.
 environment:
   sdk: ^2.0.0-alpha.121
 dependencies:
