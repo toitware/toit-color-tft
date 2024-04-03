@@ -11,12 +11,12 @@ The 320x240 TFT on the M5Stack is an ILI9341 (or 9342 according to some docs).
 The display on the LillyGo T-Wristband is an ST7735.
 */
 
-import binary
 import font show *
 import bitmap show *
 import pixel-display.true-color show *
 import pixel-display show *
 import gpio
+import io
 
 COLOR-TFT-FLIP-X ::= 0x40   // Flip across the X axis.
 COLOR-TFT-FLIP-Y ::= 0x80   // Flip across the Y axis.
@@ -203,8 +203,8 @@ class ColorTft extends AbstractDriver:
   set-range_ command from to:
     to--  // to is inclusive.
     send_ 0 command
-    binary.BIG-ENDIAN.put-uint16 buffer_ 0 from
-    binary.BIG-ENDIAN.put-uint16 buffer_ 2 to
+    io.BIG-ENDIAN.put-uint16 buffer_ 0 from
+    io.BIG-ENDIAN.put-uint16 buffer_ 2 to
     send-array command buffer_ --to=4
 
   send command:
