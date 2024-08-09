@@ -20,6 +20,7 @@ LILYGO-16-BIT-LANDSCAPE-SETTINGS          ::= [  20, 80,  160, 26,  1,   19, 18,
 LILYGO-TTGO-BIT-LANDSCAPE-SETTINGS        ::= [  20, 135, 240, 51, 40,   19, 18,   5 , 16, 23,    4,       true,  COLOR-TFT-16-BIT-MODE ]
 FEATHERWING-16-BIT-SETTINGS               ::= [  20, 320, 240, 0,   0,   23, 22,   15, 33, null, null,     false, COLOR-TFT-16-BIT-MODE | COLOR-TFT-FLIP-XY ]
 LILYGO-TTGO-T-16-BIT-LANDSCAPE-SETTINGS   ::= [  20, 135, 240, 51, 40,   19, 18,   5 , 16, 23,    4,       true,  COLOR-TFT-16-BIT-MODE | COLOR-TFT-REVERSE-R-B ]
+LILYGO-TTGO-T-QT-PRO-SETTINGS             ::= [  20, 128, 128, 0,   0,   2,   3,   5 ,  6,  1,   15,       true,  COLOR-TFT-16-BIT-MODE ]
 
 pin-for num/int? -> gpio.Pin?:
   if num == null: return null
