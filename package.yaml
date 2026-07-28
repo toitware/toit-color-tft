@@ -3,7 +3,7 @@ description: |
   Driver for 18 bit TFT color displays based on the ILI9341, ILI9488, ST7789V, ST7735,
   or GC9107 display controllers.
 environment:
-  sdk: ^2.0.0-alpha.121
+  sdk: ^2.0.0-alpha.196
 dependencies:
   pixel_display:
     url: github.com/toitware/toit-pixel-display
